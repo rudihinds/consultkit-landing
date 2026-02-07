@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConsultKit - The AI Toolkit for Consultants</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ck-orange': '#FF8800', // Main brand orange
+                        'ck-orange-light': '#FFF0D4', // Light background orange
+                        'ck-orange-dark': '#CC6D00', // Darker border orange
+                        'ck-bg': '#F9F9F9',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'hard': '4px 4px 0px 0px #000000',
+                        'hard-sm': '2px 2px 0px 0px #000000',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Grid Background Pattern */
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+                linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
+        }
+        
+        /* Dashed Border Utility */
+        .dashed-border {
+            background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='0' ry='0' stroke='black' stroke-width='2' stroke-dasharray='8%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+        }
+    </style>
+</head>
+<body class="bg-white text-black font-sans antialiased border-x-2 border-black max-w-[1440px] mx-auto min-h-screen flex flex-col">
+
+    <nav class="border-b-2 border-black p-4 flex justify-between items-center bg-white sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-ck-orange border-2 border-black flex items-center justify-center shadow-hard-sm">
+                <span class="font-bold text-white text-lg">C</span>
+            </div>
+            <span class="font-bold text-xl tracking-tight">ConsultKit <span class="text-gray-400 font-mono text-sm">// by consultants</span></span>
+        </div>
+
+        <div class="hidden md:flex items-center gap-6">
+            <a href="#" class="dashed-border px-4 py-2 font-mono text-sm hover:bg-gray-50">Deploy Solution</a>
+            <a href="#" class="dashed-border px-4 py-2 font-mono text-sm hover:bg-gray-50">Case Studies</a>
+            <a href="#" class="dashed-border px-4 py-2 font-mono text-sm hover:bg-gray-50">Docs</a>
+            
+            <div class="flex gap-4 ml-4">
+                <a href="#" class="flex items-center gap-2 border-2 border-black px-4 py-2 font-mono text-sm hover:bg-gray-100 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    GitHub
+                </a>
+                <a href="#" class="flex items-center gap-2 border-2 border-black px-4 py-2 font-mono text-sm hover:bg-gray-100 transition-colors">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.007-.127 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .117-.055c1.844.9 3.83 1.36 5.865 1.36 2.035 0 4.02-.46 5.865-1.36a.074.074 0 0 1 .117.055 10.2 10.2 0 0 0 .37.292.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.076.076 0 0 0-.04.106 13.43 13.43 0 0 0 1.226 1.994.078.078 0 0 0 .084.028 19.9 19.9 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                    Discord
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative border-b-2 border-black bg-grid-pattern">
+        <div class="absolute inset-0 pointer-events-none flex justify-between px-4 sm:px-12 md:px-24 opacity-20">
+            <div class="border-l border-dashed border-black h-full"></div>
+            <div class="border-l border-dashed border-black h-full"></div>
+            <div class="border-l border-dashed border-black h-full"></div>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-6 py-20 md:py-32 grid md:grid-cols-2 gap-12 items-center">
+            
+            <div class="space-y-8">
+                <h1 class="text-5xl md:text-7xl font-bold tracking-tight leading-[0.95]">
+                    The AI <br>
+                    Consulting <br>
+                    Framework
+                </h1>
+                
+                <p class="text-xl md:text-2xl text-gray-800 font-medium max-w-lg leading-relaxed">
+                    We built the modular alternative to monolithic agencies. Scalable, reliable AI building blocks for modern strategy.
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-4">
+                    <button class="bg-ck-orange hover:bg-ck-orange-dark text-white font-bold border-2 border-black px-8 py-4 text-lg shadow-hard transition-all transform hover:translate-y-1 hover:shadow-none flex items-center gap-3">
+                        Start Building
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                    
+                    <div class="dashed-border px-4 py-4 flex items-center gap-3 bg-white/80 backdrop-blur-sm">
+                        <span class="font-mono text-sm text-gray-600">npm install consult-kit-sdk</span>
+                        <button class="hover:text-ck-orange">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative h-[400px] flex items-center justify-center">
+                <div class="relative w-64 h-64">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 translate-y-0 z-20 group cursor-pointer transition-transform hover:-translate-y-4">
+                        <div class="w-32 h-32 bg-ck-orange border-2 border-black flex items-center justify-center transform rotate-45 skew-y-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                            <span class="transform -rotate-45 -skew-y-12 font-mono font-bold text-2xl text-white">AI</span>
+                        </div>
+                        <div class="absolute -bottom-4 left-4 w-32 h-4 bg-black transform rotate-45 skew-y-12 opacity-20 blur-md"></div>
+                    </div>
+                    
+                    <div class="absolute top-28 left-1/2 transform -translate-x-1/2 z-10">
+                        <div class="w-32 h-32 bg-white border-2 border-black flex items-center justify-center transform rotate-45 skew-y-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                             <span class="transform -rotate-45 -skew-y-12 font-mono font-bold text-2xl">DATA</span>
+                        </div>
+                    </div>
+
+                     <div class="absolute top-10 -right-10 w-40 h-40 border-2 border-dashed border-gray-400 transform rotate-45 -z-10"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="bg-ck-orange-light border-b-2 border-black">
+        <div class="max-w-7xl mx-auto px-6 py-20">
+            
+            <div class="mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">Scale expertise,<br>reliably.</h2>
+            </div>
+
+            <div class="bg-white border-2 border-black shadow-hard">
+                
+                <div class="flex flex-wrap border-b-2 border-black bg-gray-50">
+                    <button class="px-6 py-4 border-r-2 border-black font-bold bg-white text-black relative top-[2px] pb-[18px]">
+                        Strategy Agent
+                        <span class="absolute top-0 left-0 w-full h-1 bg-ck-orange"></span>
+                    </button>
+                    <button class="px-6 py-4 border-r-2 border-black font-mono text-gray-500 hover:bg-gray-100">
+                        Process Automation
+                    </button>
+                    <button class="px-6 py-4 font-mono text-gray-500 hover:bg-gray-100">
+                        Compliance Guardrails
+                    </button>
+                </div>
+
+                <div class="grid md:grid-cols-2">
+                    
+                    <div class="p-8 md:p-12 border-b-2 md:border-b-0 md:border-r-2 border-black relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-full bg-grid-pattern opacity-30 pointer-events-none"></div>
+
+                        <h3 class="text-2xl font-bold mb-4 relative z-10">Get detailed market analysis with live sources</h3>
+                        <p class="text-gray-600 mb-8 font-mono text-sm relative z-10">
+                            Deploy autonomous agents that verify facts, cross-reference databases, and output client-ready strategic briefs.
+                        </p>
+
+                        <div class="bg-white border-2 border-black p-4 mb-4 shadow-sm relative z-10 hover:shadow-hard-sm transition-shadow cursor-default">
+                            <p class="font-mono text-xs text-gray-400 mb-2">PROMPT</p>
+                            <p class="font-medium">"What are the emerging regulatory risks for Fintech in the EU for 2026?"</p>
+                        </div>
+
+                         <div class="bg-white border-2 border-black p-4 relative z-10 hover:shadow-hard-sm transition-shadow cursor-default flex justify-between items-center group">
+                            <div>
+                                <p class="font-mono text-xs text-gray-400 mb-2">ACTION</p>
+                                <p class="font-medium">Find available enterprise datasets</p>
+                            </div>
+                            <div class="w-8 h-8 border-2 border-black flex items-center justify-center group-hover:bg-ck-orange group-hover:text-white transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#FFF8F0] p-8 md:p-12 flex flex-col justify-center">
+                        <div class="bg-white border-2 border-black p-6 shadow-hard rounded-sm">
+                            <div class="flex gap-2 mb-4">
+                                <div class="w-3 h-3 rounded-full bg-ck-orange border border-black"></div>
+                                <div class="w-3 h-3 rounded-full bg-gray-300 border border-black"></div>
+                                <div class="w-3 h-3 rounded-full bg-gray-300 border border-black"></div>
+                            </div>
+                            
+                            <div class="font-mono text-sm space-y-4">
+                                <div>
+                                    <span class="text-gray-400">1</span> <span class="text-purple-600">const</span> agent = <span class="text-blue-600">new</span> ConsultKit.<span class="text-yellow-600">Agent</span>({
+                                </div>
+                                <div class="pl-4">
+                                    <span class="text-gray-400">2</span> &nbsp;&nbsp;role: <span class="text-green-600">"Strategist"</span>,
+                                </div>
+                                <div class="pl-4">
+                                    <span class="text-gray-400">3</span> &nbsp;&nbsp;tools: [<span class="text-green-600">"WebBrowsing"</span>, <span class="text-green-600">"DataAnalysis"</span>]
+                                </div>
+                                <div>
+                                    <span class="text-gray-400">4</span> });
+                                </div>
+                                <div class="h-4"></div>
+                                <div class="bg-gray-100 p-2 border-l-4 border-ck-orange">
+                                    <span class="text-gray-500">// Output generated</span><br>
+                                    <span class="font-bold">agent.execute("Generate Q1 Report")</span>
+                                </div>
+                            </div>
+
+                            <button class="mt-6 w-full bg-green-400 hover:bg-green-500 text-black font-bold py-3 border-2 border-black shadow-hard-sm text-sm">
+                                Run Simulation
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="bg-white py-12 px-6 border-t border-black mt-auto">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
+            <div>
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-6 h-6 bg-ck-orange border border-black"></div>
+                    <span class="font-bold">ConsultKit</span>
+                </div>
+                <p class="font-mono text-sm text-gray-500 max-w-xs">
+                    Modular AI infrastructure for the next generation of consulting firms.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-12 font-mono text-sm">
+                <div class="space-y-3">
+                    <p class="font-bold text-black mb-2">Product</p>
+                    <a href="#" class="block text-gray-600 hover:underline">Agents</a>
+                    <a href="#" class="block text-gray-600 hover:underline">Observability</a>
+                    <a href="#" class="block text-gray-600 hover:underline">Enterprise</a>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-bold text-black mb-2">Resources</p>
+                    <a href="#" class="block text-gray-600 hover:underline">Documentation</a>
+                    <a href="#" class="block text-gray-600 hover:underline">API Reference</a>
+                    <a href="#" class="block text-gray-600 hover:underline">Community</a>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-12 pt-8 border-t border-dashed border-gray-300 flex justify-between items-center font-mono text-xs text-gray-400">
+            <p>© 2026 ConsultKit Inc.</p>
+            <div class="flex gap-4">
+                <span>System Status: <span class="text-green-500">● Operational</span></span>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

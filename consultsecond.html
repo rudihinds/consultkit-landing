@@ -1,0 +1,1813 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consult Kit // The Sales Framework</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500&family=Inter+Tight:wght@700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Inter Tight', 'Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            orange: '#FF6D2C',
+                            light: '#FFF4EB',
+                            dark: '#111111',
+                            cream: '#F9F9F7',
+                            grid: '#E5E5E5',
+                            yellow: '#FFF3D4',
+                            amber: '#FDEAB7',
+                        }
+                    },
+                    boxShadow: {
+                        'hard': '4px 4px 0px 0px #000000',
+                        'hard-sm': '2px 2px 0px 0px #000000',
+                        'hard-lg': '6px 6px 0px 0px #000000',
+                        'hard-hover': '8px 8px 0px 0px #000000',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Headlines use Inter Tight */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Inter Tight', 'Inter', sans-serif;
+        }
+
+        /* Engineering graph paper grid - minor + major lines like Stagehand */
+        .bg-technical-grid {
+            background-color: #F9F9F7;
+            background-image:
+                /* Major grid lines (every 5th line = 150px) - slightly thicker/darker */
+                linear-gradient(to right, #E2E2E2 1px, transparent 1px),
+                linear-gradient(to bottom, #E2E2E2 1px, transparent 1px),
+                /* Minor grid lines (30px) - thin and light */
+                linear-gradient(to right, #E8E8E8 0.5px, transparent 0.5px),
+                linear-gradient(to bottom, #E8E8E8 0.5px, transparent 0.5px);
+            background-size:
+                120px 120px,
+                120px 120px,
+                24px 24px,
+                24px 24px;
+        }
+
+        /* Warm woven linen texture — thin broken white threads on pale yellow */
+        .bg-warm-solid {
+            background-color: #F5E8B8;
+            background-image:
+                repeating-linear-gradient(
+                    -45deg,
+                    transparent,
+                    transparent 3.5px,
+                    rgba(255,255,255,0.5) 3.5px,
+                    rgba(255,255,255,0.5) 4.5px
+                ),
+                repeating-linear-gradient(
+                    -45deg,
+                    transparent,
+                    transparent 1px,
+                    rgba(255,255,255,0.15) 1px,
+                    rgba(255,255,255,0.15) 2px,
+                    transparent 2px,
+                    transparent 5px
+                );
+            background-size: 5.5px 5.5px, 7px 7px;
+        }
+
+        /* Pulse-flash for discount pill */
+        @keyframes pulse-flash {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.06); }
+        }
+
+        /* Block hover effect - elements RAISE on hover */
+        .block-hover {
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .block-hover:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px 0px #000000;
+        }
+
+        /* Tab triangle decorations */
+        .tab-triangle-orange::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 24px 24px 0;
+            border-color: transparent #FF6D2C transparent transparent;
+        }
+        .tab-triangle-blue::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 24px 24px 0;
+            border-color: transparent #3B82F6 transparent transparent;
+        }
+        .tab-triangle-green::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 24px 24px 0;
+            border-color: transparent #22C55E transparent transparent;
+        }
+
+        /* Dashed border utility */
+        .dashed-border {
+            background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='0' ry='0' stroke='black' stroke-width='2' stroke-dasharray='8%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+        }
+
+        /* FAQ accordion */
+        .faq-item summary {
+            cursor: pointer;
+            list-style: none;
+        }
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+        .faq-item[open] summary .faq-chevron {
+            transform: rotate(180deg);
+        }
+        .faq-item .faq-chevron {
+            transition: transform 0.2s ease;
+        }
+
+        /* Step highlight styles (interactive demo section) */
+        .step-item {
+            padding: 12px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #9CA3AF;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        .step-item.active {
+            background: #111111;
+            color: white;
+            border-left-color: #FF6D2C;
+        }
+        .step-item:hover:not(.active) {
+            color: #374151;
+        }
+
+        /* How-it-works step tiles — borderless, equal-height stacked blocks */
+        .how-step-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0 20px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6B7280;
+            background: transparent;
+            flex: 1;
+            border: none;
+            text-align: left;
+        }
+        .how-step-btn.active {
+            background: #FF6D2C;
+            color: #fff;
+            font-weight: 700;
+        }
+        .how-step-btn.active .step-num {
+            opacity: 0.6;
+        }
+        .how-step-btn:hover:not(.active) {
+            background: rgba(0,0,0,0.03);
+            color: #374151;
+        }
+
+        /* Tab button states — dotted when inactive, solid when active (Stagehand style) */
+        .how-tab {
+            transition: all 0.15s ease;
+        }
+        .how-tab.active {
+            border: 2px solid #000;
+            border-bottom-color: transparent !important;
+            font-weight: 700;
+            color: #111;
+        }
+        .how-tab:not(.active) {
+            border: 2px dashed #000;
+            border-bottom: 2px solid #000;
+            color: #6B7280;
+        }
+        .how-tab:not(.active):hover {
+            color: #374151;
+            background-color: #f9f9f7;
+        }
+
+        /* Title block with corner notch — Stagehand style */
+        .block-title {
+            position: relative;
+            background: white;
+            border: 2px solid black;
+            padding: 24px 32px;
+            display: inline-block;
+        }
+        .block-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 32px;
+            height: 32px;
+            background: #F3E8CF;
+            border-left: 2px solid black;
+            border-top: 2px solid black;
+        }
+
+        /* Scroll items — fade inactive */
+        .scroll-item {
+            opacity: 0.4;
+            transition: opacity 0.4s ease;
+        }
+        .scroll-item.active {
+            opacity: 1;
+        }
+
+        /* Scroll visuals — swap with fade */
+        .scroll-visual {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .scroll-visual.active {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-white text-brand-dark font-sans selection:bg-brand-orange selection:text-white">
+    <!-- Page frame container - black left/right borders like Stagehand -->
+    <div class="max-w-[1440px] mx-auto border-x-2 border-black min-h-screen flex flex-col bg-brand-cream">
+
+    <!-- NAV - Stagehand segmented bar style -->
+    <nav class="border-b-2 border-black bg-white sticky top-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-brand-orange border-2 border-black flex items-center justify-center shadow-hard-sm">
+                    <span class="font-mono font-bold text-white text-lg">C</span>
+                </div>
+                <div class="font-bold text-xl tracking-tight">ConsultKit</div>
+            </div>
+
+            <div class="hidden md:flex items-center border-2 border-black">
+                <a href="#how-it-works" class="px-4 py-2 font-mono text-sm font-medium hover:bg-brand-orange/10 transition-colors">How it works</a>
+                <a href="#pricing" class="px-4 py-2 border-l border-black font-mono text-sm font-medium hover:bg-brand-orange/10 transition-colors">Pricing</a>
+                <a href="#faq" class="px-4 py-2 border-l border-black font-mono text-sm font-medium hover:bg-brand-orange/10 transition-colors">FAQ</a>
+                <a href="#" class="px-4 py-2 border-l-2 border-black bg-brand-orange font-mono text-sm font-bold block-hover transition-all">Start free trial</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO - dashed grid flows through entire hero like Stagehand -->
+    <header class="relative border-b-2 border-black bg-technical-grid overflow-hidden">
+        <!-- Diagonal construction lines spanning full hero -->
+        <svg class="absolute inset-0 pointer-events-none z-0" width="100%" height="100%" preserveAspectRatio="none">
+            <line x1="0" y1="100%" x2="60%" y2="0" stroke="#000" stroke-width="1" stroke-dasharray="6 6" class="opacity-10"/>
+            <line x1="40%" y1="100%" x2="100%" y2="0" stroke="#000" stroke-width="1" stroke-dasharray="6 6" class="opacity-10"/>
+        </svg>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 min-h-[600px] relative z-10">
+
+            <!-- Left: headline, sub-headline, CTA -->
+            <div class="flex flex-col justify-center px-8 py-20">
+
+                <h1 class="text-5xl md:text-7xl font-medium tracking-tight leading-[1.05] mb-8">
+                    Now you can sell AI<br>
+                    to any business—at scale
+                </h1>
+
+                <p class="text-lg md:text-xl text-gray-700 font-medium leading-relaxed mb-10 max-w-lg">
+                    Turnkey white-label system that qualifies ANY prospect and hands you their budget, bottlenecks, and the systems to close them.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                    <div class="flex">
+                        <button class="bg-brand-orange border-2 border-black border-r-0 px-6 py-3 font-bold text-sm block-hover transition-all flex items-center gap-2">
+                            Get started
+                        </button>
+                        <div class="bg-brand-dark border-2 border-black w-11 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: fanned audit report cards -->
+            <div class="relative flex items-center justify-center">
+                <div class="relative w-full h-full flex items-center justify-center scale-75 md:scale-100">
+                    <div class="relative" style="width: 280px; height: 340px;">
+
+                        <!-- Card 3 (back) — Apex Dental Group / Healthcare -->
+                        <div class="absolute bg-white border-2 border-black shadow-hard-sm p-3" style="width: 220px; height: 280px; transform: rotate(-6deg) translate(-44px, -28px); z-index: 10;">
+                            <div class="flex items-center gap-2 mb-2 border-b border-gray-200 pb-2">
+                                <div class="w-6 h-6 bg-teal-600 border border-black flex items-center justify-center">
+                                    <span class="text-white text-xs font-bold">A</span>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-xs">Apex Dental Group</div>
+                                    <span class="text-[10px] font-mono bg-gray-100 border border-gray-300 px-1">Healthcare</span>
+                                </div>
+                            </div>
+                            <div class="font-bold text-sm mb-2">AI Readiness Report</div>
+                            <div class="space-y-1.5 text-xs">
+                                <div class="flex justify-between"><span class="text-gray-500">Readiness Score</span><span class="font-bold">41/100</span></div>
+                                <div class="w-full bg-gray-200 h-1"><div class="bg-teal-500 h-1" style="width: 41%"></div></div>
+                                <div class="flex justify-between"><span class="text-gray-500">Est. AI Budget</span><span class="font-bold">$220K</span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">Recommendations</span><span class="font-bold">14</span></div>
+                            </div>
+                            <div class="mt-3 flex items-center gap-1">
+                                <div class="w-3 h-3 bg-green-500 border border-black"></div>
+                                <span class="text-[10px] font-bold text-green-700 uppercase tracking-wider">Complete</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 (middle) — Vantage Property Partners / Real Estate -->
+                        <div class="absolute bg-white border-2 border-black shadow-hard-sm p-3" style="width: 220px; height: 280px; transform: rotate(-1deg) translate(-8px, -4px); z-index: 20;">
+                            <div class="flex items-center gap-2 mb-2 border-b border-gray-200 pb-2">
+                                <div class="w-6 h-6 bg-indigo-600 border border-black flex items-center justify-center">
+                                    <span class="text-white text-xs font-bold">V</span>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-xs">Vantage Property Partners</div>
+                                    <span class="text-[10px] font-mono bg-gray-100 border border-gray-300 px-1">Real Estate</span>
+                                </div>
+                            </div>
+                            <div class="font-bold text-sm mb-2">AI Readiness Report</div>
+                            <div class="space-y-1.5 text-xs">
+                                <div class="flex justify-between"><span class="text-gray-500">Readiness Score</span><span class="font-bold">67/100</span></div>
+                                <div class="w-full bg-gray-200 h-1"><div class="bg-indigo-500 h-1" style="width: 67%"></div></div>
+                                <div class="flex justify-between"><span class="text-gray-500">Est. AI Budget</span><span class="font-bold">$385K</span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">Recommendations</span><span class="font-bold">9</span></div>
+                            </div>
+                            <div class="mt-3 flex items-center gap-1">
+                                <div class="w-3 h-3 bg-green-500 border border-black"></div>
+                                <span class="text-[10px] font-bold text-green-700 uppercase tracking-wider">Complete</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 1 (front) — Summit & Co / Marketing -->
+                        <div class="absolute bg-white border-2 border-black shadow-hard-sm p-3" style="width: 220px; height: 280px; transform: rotate(4deg) translate(32px, 20px); z-index: 30;">
+                            <div class="flex items-center gap-2 mb-2 border-b border-gray-200 pb-2">
+                                <div class="w-6 h-6 bg-brand-orange border border-black flex items-center justify-center">
+                                    <span class="text-white text-xs font-bold">S</span>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-xs">Summit &amp; Co</div>
+                                    <span class="text-[10px] font-mono bg-gray-100 border border-gray-300 px-1">Marketing</span>
+                                </div>
+                            </div>
+                            <div class="font-bold text-sm mb-2">AI Readiness Report</div>
+                            <div class="space-y-1.5 text-xs">
+                                <div class="flex justify-between"><span class="text-gray-500">Readiness Score</span><span class="font-bold">83/100</span></div>
+                                <div class="w-full bg-gray-200 h-1"><div class="bg-brand-orange h-1" style="width: 83%"></div></div>
+                                <div class="flex justify-between"><span class="text-gray-500">Est. AI Budget</span><span class="font-bold">$275K</span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">Recommendations</span><span class="font-bold">6</span></div>
+                            </div>
+                            <div class="mt-3 flex items-center gap-1">
+                                <div class="w-3 h-3 bg-green-500 border border-black"></div>
+                                <span class="text-[10px] font-bold text-green-700 uppercase tracking-wider">Complete</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- PAIN — The Problem Before the Solution -->
+    <section class="pt-14 pb-14 border-b-2 border-black bg-warm-solid">
+        <div class="max-w-3xl mx-auto px-4 lg:px-8">
+
+            <h2 class="text-4xl md:text-5xl font-black leading-tight mb-4 text-center">
+                Almost nobody is selling B2B AI at scale.
+            </h2>
+            <p class="text-xl md:text-2xl text-gray-600 font-medium mb-7 text-center">
+                Not because they don't want to. Because the playbook doesn't work.
+            </p>
+
+            <div class="space-y-4 text-lg text-gray-700 leading-relaxed mb-10">
+                <p>Every lead costs hours of unpaid consulting. Every client you deliver
+                   pulls you off prospecting. One deal falls through—pipeline's empty.
+                   Back to the drawing board.</p>
+                <p>"Niche down," they say. But niching doesn't fix the math.
+                   It just shrinks who you can sell to.</p>
+                <p>The only agencies scaling? They built audiences.
+                   That's a different years-long grind.</p>
+            </div>
+
+            <div class="text-center">
+                <div class="inline-block border border-black bg-white px-10 py-8 shadow-hard-sm">
+                    <p class="text-lg md:text-xl font-medium leading-snug">
+                        What if prospects did the discovery before the call—and handed you the close?
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SOLUTION — Fanned Audit Reports + Value Proposition -->
+    <section class="py-20 border-b-2 border-black bg-technical-grid">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+                <!-- LEFT: Fanned audit reports stack -->
+                <div class="relative flex items-center justify-center" style="height: 400px;">
+
+                    <!-- Card 3 (back) — Apex Dental Group / Healthcare -->
+                    <div class="absolute bg-white border-2 border-black shadow-hard-sm p-3" style="width: 220px; height: 280px; transform: rotate(-6deg) translate(-44px, -28px); z-index: 10;">
+                        <div class="flex items-center gap-2 mb-2 border-b border-gray-200 pb-2">
+                            <div class="w-6 h-6 bg-teal-600 border border-black flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">A</span>
+                            </div>
+                            <div>
+                                <div class="font-bold text-xs">Apex Dental Group</div>
+                                <span class="text-[10px] font-mono bg-gray-100 border border-gray-300 px-1">Healthcare</span>
+                            </div>
+                        </div>
+                        <div class="font-bold text-sm mb-2">AI Readiness Report</div>
+                        <div class="space-y-1.5 text-xs">
+                            <div class="flex justify-between"><span class="text-gray-500">Readiness Score</span><span class="font-bold">41/100</span></div>
+                            <div class="w-full bg-gray-200 h-1"><div class="bg-teal-500 h-1" style="width: 41%"></div></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Est. AI Budget</span><span class="font-bold">$220K</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Recommendations</span><span class="font-bold">14</span></div>
+                        </div>
+                        <div class="mt-3 flex items-center gap-1">
+                            <div class="w-3 h-3 bg-green-500 border border-black"></div>
+                            <span class="text-[10px] font-bold text-green-700 uppercase tracking-wider">Complete</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 (middle) — Vantage Property Partners / Real Estate -->
+                    <div class="absolute bg-white border-2 border-black shadow-hard-sm p-3" style="width: 220px; height: 280px; transform: rotate(-1deg) translate(-8px, -4px); z-index: 20;">
+                        <div class="flex items-center gap-2 mb-2 border-b border-gray-200 pb-2">
+                            <div class="w-6 h-6 bg-indigo-600 border border-black flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">V</span>
+                            </div>
+                            <div>
+                                <div class="font-bold text-xs">Vantage Property Partners</div>
+                                <span class="text-[10px] font-mono bg-gray-100 border border-gray-300 px-1">Real Estate</span>
+                            </div>
+                        </div>
+                        <div class="font-bold text-sm mb-2">AI Readiness Report</div>
+                        <div class="space-y-1.5 text-xs">
+                            <div class="flex justify-between"><span class="text-gray-500">Readiness Score</span><span class="font-bold">67/100</span></div>
+                            <div class="w-full bg-gray-200 h-1"><div class="bg-indigo-500 h-1" style="width: 67%"></div></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Est. AI Budget</span><span class="font-bold">$385K</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Recommendations</span><span class="font-bold">9</span></div>
+                        </div>
+                        <div class="mt-3 flex items-center gap-1">
+                            <div class="w-3 h-3 bg-green-500 border border-black"></div>
+                            <span class="text-[10px] font-bold text-green-700 uppercase tracking-wider">Complete</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 1 (front) — Summit & Co / Marketing -->
+                    <div class="absolute bg-white border-2 border-black shadow-hard-sm p-3" style="width: 220px; height: 280px; transform: rotate(4deg) translate(32px, 20px); z-index: 30;">
+                        <div class="flex items-center gap-2 mb-2 border-b border-gray-200 pb-2">
+                            <div class="w-6 h-6 bg-brand-orange border border-black flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">S</span>
+                            </div>
+                            <div>
+                                <div class="font-bold text-xs">Summit &amp; Co</div>
+                                <span class="text-[10px] font-mono bg-gray-100 border border-gray-300 px-1">Marketing</span>
+                            </div>
+                        </div>
+                        <div class="font-bold text-sm mb-2">AI Readiness Report</div>
+                        <div class="space-y-1.5 text-xs">
+                            <div class="flex justify-between"><span class="text-gray-500">Readiness Score</span><span class="font-bold">83/100</span></div>
+                            <div class="w-full bg-gray-200 h-1"><div class="bg-brand-orange h-1" style="width: 83%"></div></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Est. AI Budget</span><span class="font-bold">$275K</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Recommendations</span><span class="font-bold">6</span></div>
+                        </div>
+                        <div class="mt-3 flex items-center gap-1">
+                            <div class="w-3 h-3 bg-green-500 border border-black"></div>
+                            <span class="text-[10px] font-bold text-green-700 uppercase tracking-wider">Complete</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Copy + CTA -->
+                <div>
+                    <h2 class="text-3xl lg:text-4xl font-black leading-tight mb-6">While you were closing your last deal, your audit agent qualified the next five.</h2>
+                    <p class="text-lg text-gray-700 mb-4">Prospects take your audit to find out what AI they're missing&mdash;and tell you everything you'd normally have to spend weeks uncovering, without realising it.</p>
+                    <p class="text-gray-600 italic text-sm mb-8">Built on the diagnostic frameworks McKinsey and BCG use for billion-dollar AI practices&mdash;white-labeled under your brand.</p>
+
+                    <div class="flex">
+                        <button class="bg-brand-orange border-2 border-black border-r-0 px-6 py-3 font-bold text-sm block-hover transition-all flex items-center gap-2">
+                            Get started
+                        </button>
+                        <div class="bg-brand-dark border-2 border-black w-11 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS v1 - commented out, replaced by v2 below -->
+    <section hidden class="border-b-2 border-black bg-warm-solid py-20">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8">
+            <div class="block-title mb-12">
+                <h2 class="text-4xl font-black">How it actually works.</h2>
+            </div>
+
+            <div class="flex flex-col">
+                <!-- Tab bar -->
+                <div class="flex">
+                    <button class="how-tab active relative bg-white px-8 py-4 mr-[-2px] z-10 tab-triangle-orange" data-tab="prospect">
+                        What your prospect sees
+                    </button>
+                    <button class="how-tab relative bg-white px-8 py-4 font-mono mr-[-2px] tab-triangle-blue" data-tab="consultant">
+                        What you get
+                    </button>
+                    <div class="flex-grow border-b-2 border-black"></div>
+                </div>
+
+                <!-- Content panel -->
+                <div class="bg-white border-2 border-black border-t-0">
+
+                    <!-- Tab 1: What your prospect sees -->
+                    <div data-tab-panel="prospect" class="grid grid-cols-1 lg:grid-cols-[25%_1fr] min-h-[480px]">
+                        <!-- Step tiles -->
+                        <div class="flex flex-col">
+                            <button class="how-step-btn active w-full" data-step="1">
+                                <span class="step-num text-xl font-black opacity-40">1</span>
+                                Branded audit
+                            </button>
+                            <button class="how-step-btn w-full" data-step="2">
+                                <span class="step-num text-xl font-black opacity-40">2</span>
+                                Smart questions
+                            </button>
+                            <button class="how-step-btn w-full" data-step="3">
+                                <span class="step-num text-xl font-black opacity-40">3</span>
+                                Custom report
+                            </button>
+                            <button class="how-step-btn w-full" data-step="4">
+                                <span class="step-num text-xl font-black opacity-40">4</span>
+                                Ready to close
+                            </button>
+                        </div>
+
+                        <!-- Step content area -->
+                        <div>
+                            <!-- Step 1 -->
+                            <div class="how-step-content grid grid-cols-1 md:grid-cols-2 gap-0 h-full" data-step-content="1">
+                                <div class="p-8 flex flex-col justify-center">
+                                    <h3 class="text-2xl font-bold mb-4">An AI audit in your brand</h3>
+                                    <p class="text-gray-600 text-lg leading-relaxed">
+                                        Your prospect answers a short series of questions about their business &mdash; operations, pain points, tech stack, goals, budget. It runs under your brand. They never see ConsultKit.
+                                    </p>
+                                </div>
+                                <div class="p-8 border-l border-black bg-gray-50 flex items-center">
+                                    <div class="border-2 border-dashed border-black bg-white w-full">
+                                        <div class="px-4 py-3 border-b border-dashed border-black flex items-center gap-3">
+                                            <div class="w-6 h-6 bg-brand-orange border border-black flex items-center justify-center">
+                                                <span class="text-white text-xs font-bold">Y</span>
+                                            </div>
+                                            <span class="font-bold text-sm">Your Brand &mdash; AI Readiness Audit</span>
+                                        </div>
+                                        <div class="p-4 space-y-4">
+                                            <div class="bg-gray-50 border border-gray-200 p-3">
+                                                <p class="font-mono text-xs text-gray-400 mb-1">Question 3 of 12</p>
+                                                <p class="text-sm font-medium">How much time does your team spend on repetitive tasks each week?</p>
+                                            </div>
+                                            <div class="space-y-2">
+                                                <div class="border border-gray-200 px-3 py-2 text-sm">Less than 5 hours</div>
+                                                <div class="border border-brand-orange bg-brand-orange/5 px-3 py-2 text-sm font-medium">5&ndash;20 hours</div>
+                                                <div class="border border-gray-200 px-3 py-2 text-sm">20+ hours</div>
+                                            </div>
+                                            <div class="w-full bg-gray-200 h-1.5"><div class="bg-brand-orange h-1.5" style="width:25%"></div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 2 -->
+                            <div class="how-step-content hidden grid grid-cols-1 md:grid-cols-2 gap-0 h-full" data-step-content="2">
+                                <div class="p-8 flex flex-col justify-center">
+                                    <h3 class="text-2xl font-bold mb-4">Questions that map directly to where AI can help</h3>
+                                    <p class="text-gray-600 text-lg leading-relaxed">
+                                        Every question is built on diagnostic frameworks used by tier-1 consultancies. Each response narrows the gap between &ldquo;I&rsquo;m curious about AI&rdquo; and &ldquo;I can see exactly what I need.&rdquo;
+                                    </p>
+                                </div>
+                                <div class="p-8 border-l border-black bg-gray-50 flex items-center">
+                                    <div class="border-2 border-dashed border-black bg-white w-full">
+                                        <div class="px-4 py-3 border-b border-dashed border-black">
+                                            <span class="font-mono text-xs text-gray-400">DIAGNOSTIC &mdash; BRANCHING</span>
+                                        </div>
+                                        <div class="p-4 space-y-4">
+                                            <p class="text-sm font-medium">What's your biggest operational bottleneck?</p>
+                                            <div class="space-y-2">
+                                                <div class="border border-gray-200 px-3 py-2 text-sm flex items-center gap-2">
+                                                    <span class="w-5 h-5 border border-gray-300 flex items-center justify-center text-xs shrink-0">A</span>
+                                                    Customer support response times
+                                                </div>
+                                                <div class="border border-brand-orange bg-brand-orange/5 px-3 py-2 text-sm flex items-center gap-2 font-medium">
+                                                    <span class="w-5 h-5 bg-brand-orange text-white flex items-center justify-center text-xs font-bold shrink-0">B</span>
+                                                    Manual data entry &amp; reporting
+                                                </div>
+                                                <div class="border border-gray-200 px-3 py-2 text-sm flex items-center gap-2">
+                                                    <span class="w-5 h-5 border border-gray-300 flex items-center justify-center text-xs shrink-0">C</span>
+                                                    Lead qualification &amp; follow-up
+                                                </div>
+                                                <div class="border border-gray-200 px-3 py-2 text-sm flex items-center gap-2">
+                                                    <span class="w-5 h-5 border border-gray-300 flex items-center justify-center text-xs shrink-0">D</span>
+                                                    Content creation &amp; marketing
+                                                </div>
+                                            </div>
+                                            <p class="font-mono text-xs text-gray-400 mt-2">&#8627; branches to: data pipeline assessment</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div class="how-step-content hidden grid grid-cols-1 md:grid-cols-2 gap-0 h-full" data-step-content="3">
+                                <div class="p-8 flex flex-col justify-center">
+                                    <h3 class="text-2xl font-bold mb-4">A custom report showing what AI could do for their business</h3>
+                                    <p class="text-gray-600 text-lg leading-relaxed">
+                                        The audit agent analyses their responses, identifies what&rsquo;s costing them money, and generates a report matching their situation to proven AI solutions &mdash; with projected ROI and clear upside. Not generic. Theirs.
+                                    </p>
+                                </div>
+                                <div class="p-8 border-l border-black bg-gray-50 flex items-center">
+                                    <div class="border-2 border-dashed border-black bg-white w-full">
+                                        <div class="px-4 py-3 border-b border-dashed border-black flex justify-between items-center">
+                                            <span class="font-bold text-sm">AI Readiness Report</span>
+                                            <span class="font-mono text-xs text-gray-400">CONFIDENTIAL</span>
+                                        </div>
+                                        <div class="p-4 space-y-4">
+                                            <div class="border-l-2 border-brand-orange pl-3">
+                                                <p class="font-mono text-xs text-gray-400 mb-1">RECOMMENDED</p>
+                                                <p class="font-bold text-sm">AI Customer Service Agent</p>
+                                                <p class="text-xs text-gray-500 mt-1">Automate 60-80% of L1 support tickets using a trained LLM agent.</p>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div class="bg-gray-50 border border-gray-200 p-3">
+                                                    <p class="font-mono text-xs text-gray-400">PROJECTED ROI</p>
+                                                    <p class="font-bold text-lg">$142k <span class="text-xs font-normal text-gray-400">/yr</span></p>
+                                                </div>
+                                                <div class="bg-gray-50 border border-gray-200 p-3">
+                                                    <p class="font-mono text-xs text-gray-400">INVESTMENT</p>
+                                                    <p class="font-bold text-lg">$15&ndash;25k</p>
+                                                </div>
+                                            </div>
+                                            <div class="border-l-2 border-blue-400 pl-3">
+                                                <p class="font-mono text-xs text-gray-400 mb-1">ALSO RECOMMENDED</p>
+                                                <p class="font-bold text-sm">Automated Reporting Pipeline</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 4 -->
+                            <div class="how-step-content hidden grid grid-cols-1 md:grid-cols-2 gap-0 h-full" data-step-content="4">
+                                <div class="p-8 flex flex-col justify-center">
+                                    <h3 class="text-2xl font-bold mb-4">They get on the call informed, specific, and ready to move</h3>
+                                    <p class="text-gray-600 text-lg leading-relaxed">
+                                        By the time you&rsquo;re on the call, they&rsquo;ve already seen where they&rsquo;re leaving money on the table and which systems would fix it. Problem discovery is done. You&rsquo;re not educating &mdash; you&rsquo;re scoping next steps.
+                                    </p>
+                                </div>
+                                <div class="p-8 border-l border-black bg-gray-50 flex items-center">
+                                    <div class="border-2 border-dashed border-black bg-white w-full">
+                                        <div class="px-4 py-3 border-b border-dashed border-black flex items-center justify-between">
+                                            <span class="font-bold text-sm">Book Your Strategy Call</span>
+                                            <span class="bg-green-100 text-green-700 font-mono text-xs px-2 py-0.5 border border-green-300">DISCOVERY COMPLETE</span>
+                                        </div>
+                                        <div class="p-4 space-y-4">
+                                            <div class="grid grid-cols-5 gap-1 text-center text-xs font-mono">
+                                                <div class="text-gray-400 py-1">Mon</div><div class="text-gray-400 py-1">Tue</div><div class="text-gray-400 py-1">Wed</div><div class="text-gray-400 py-1">Thu</div><div class="text-gray-400 py-1">Fri</div>
+                                                <div class="py-1 text-gray-300">14</div><div class="py-1 text-gray-300">15</div><div class="py-1 bg-brand-orange text-white font-bold">16</div><div class="py-1">17</div><div class="py-1">18</div>
+                                            </div>
+                                            <div class="border border-gray-200 p-3 space-y-2">
+                                                <p class="font-mono text-xs text-gray-400">KEY STATS FROM AUDIT</p>
+                                                <div class="flex justify-between text-sm"><span class="text-gray-500">Pain points identified</span><span class="font-bold">3</span></div>
+                                                <div class="flex justify-between text-sm"><span class="text-gray-500">Estimated AI ROI</span><span class="font-bold text-green-600">$142k/yr</span></div>
+                                                <div class="flex justify-between text-sm"><span class="text-gray-500">Budget range</span><span class="font-bold">$15&ndash;25k</span></div>
+                                            </div>
+                                            <button class="w-full bg-brand-orange text-white py-2 font-bold text-sm border border-black">Confirm Wed, Jan 16 at 2:00 PM</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: What you get -->
+                    <div data-tab-panel="consultant" class="hidden grid grid-cols-1 lg:grid-cols-[25%_1fr] min-h-[480px]">
+                        <!-- Step tiles -->
+                        <div class="flex flex-col">
+                            <button class="how-step-btn active w-full" data-step="1">
+                                <span class="step-num text-xl font-black opacity-40">1</span>
+                                Landing page
+                            </button>
+                            <button class="how-step-btn w-full" data-step="2">
+                                <span class="step-num text-xl font-black opacity-40">2</span>
+                                Prospect intel
+                            </button>
+                            <button class="how-step-btn w-full" data-step="3">
+                                <span class="step-num text-xl font-black opacity-40">3</span>
+                                Pre-built packages
+                            </button>
+                            <button class="how-step-btn w-full" data-step="4">
+                                <span class="step-num text-xl font-black opacity-40">4</span>
+                                Auto pipeline
+                            </button>
+                        </div>
+
+                        <!-- Step content area -->
+                        <div>
+                            <!-- Step 1 -->
+                            <div class="how-step-content grid grid-cols-1 md:grid-cols-2 gap-0 h-full" data-step-content="1">
+                                <div class="p-8 flex flex-col justify-center">
+                                    <h3 class="text-2xl font-bold mb-4">A branded landing page that&rsquo;s live the moment you sign up</h3>
+                                    <p class="text-gray-600 text-lg leading-relaxed">
+                                        Add your logo, colours, and testimonials &mdash; it&rsquo;s ready to share the moment your account is active. Outreach, LinkedIn, ads, your website. Consultants using it typically see click-through rates 5&ndash;10&times; higher than standard landing pages.
+                                    </p>
+                                </div>
+                                <div class="p-8 border-l border-black bg-gray-50 flex items-center">
+                                    <div class="border-2 border-dashed border-black bg-white w-full">
+                                        <div class="px-4 py-2 border-b border-dashed border-black bg-gray-50 flex items-center gap-2">
+                                            <div class="w-4 h-4 bg-brand-orange border border-black"></div>
+                                            <span class="font-mono text-xs text-gray-400">yourbrand.consultkit.io</span>
+                                        </div>
+                                        <div class="p-5 space-y-4">
+                                            <div class="flex items-center gap-2 mb-3">
+                                                <div class="w-8 h-8 bg-gray-200 border border-gray-300"></div>
+                                                <span class="font-bold text-sm">Your Brand</span>
+                                            </div>
+                                            <div class="space-y-2"><div class="h-3 bg-gray-800 w-3/4"></div><div class="h-3 bg-gray-800 w-1/2"></div></div>
+                                            <div class="h-2 bg-gray-200 w-full"></div>
+                                            <div class="h-2 bg-gray-200 w-5/6"></div>
+                                            <button class="bg-brand-orange text-white px-4 py-2 text-xs font-bold border border-black w-full mt-2">Take the Free AI Readiness Audit &rarr;</button>
+                                            <div class="flex gap-2 mt-2">
+                                                <div class="h-12 bg-gray-100 border border-gray-200 flex-1"></div>
+                                                <div class="h-12 bg-gray-100 border border-gray-200 flex-1"></div>
+                                                <div class="h-12 bg-gray-100 border border-gray-200 flex-1"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 2 -->
+                            <div class="how-step-content hidden grid grid-cols-1 md:grid-cols-2 gap-0 h-full" data-step-content="2">
+                                <div class="p-8 flex flex-col justify-center">
+                                    <h3 class="text-2xl font-bold mb-4">Full prospect intel before you say a word</h3>
+                                    <p class="text-gray-600 text-lg leading-relaxed">
+                                        The audit agent captures everything &mdash; budget range, timeline, team size, tech stack, key pain points, and contact details. When the call comes, you already know more about their business than they&rsquo;d expect.
+                                    </p>
+                                </div>
+                                <div class="p-8 border-l border-black bg-gray-50 flex items-center">
+                                    <div class="border-2 border-dashed border-black bg-white w-full">
+                                        <div class="px-4 py-3 border-b border-dashed border-black flex items-center justify-between">
+                                            <span class="font-bold text-sm">Prospect Intel</span>
+                                            <span class="font-mono text-xs text-gray-400">PRE-CALL BRIEF</span>
+                                        </div>
+                                        <div class="p-4 space-y-3">
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div class="border border-gray-200 p-2">
+                                                    <p class="font-mono text-xs text-gray-400">BUDGET</p>
+                                                    <p class="font-bold text-sm">$15k &ndash; $25k</p>
+                                                </div>
+                                                <div class="border border-gray-200 p-2">
+                                                    <p class="font-mono text-xs text-gray-400">TIMELINE</p>
+                                                    <p class="font-bold text-sm">Q2 2025</p>
+                                                </div>
+                                            </div>
+                                            <div class="border border-gray-200 p-2">
+                                                <p class="font-mono text-xs text-gray-400">TECH STACK</p>
+                                                <div class="flex gap-1 mt-1 flex-wrap">
+                                                    <span class="bg-gray-100 px-2 py-0.5 text-xs font-mono">Salesforce</span>
+                                                    <span class="bg-gray-100 px-2 py-0.5 text-xs font-mono">Slack</span>
+                                                    <span class="bg-gray-100 px-2 py-0.5 text-xs font-mono">Notion</span>
+                                                    <span class="bg-gray-100 px-2 py-0.5 text-xs font-mono">Zapier</span>
+                                                </div>
+                                            </div>
+                                            <div class="border border-gray-200 p-2">
+                                                <p class="font-mono text-xs text-gray-400">PAIN POINTS</p>
+                                                <ul class="text-sm mt-1 space-y-1">
+                                                    <li class="flex items-start gap-1"><span class="text-red-400 mt-0.5">&#9679;</span> 15hrs/wk on manual reporting</li>
+                                                    <li class="flex items-start gap-1"><span class="text-red-400 mt-0.5">&#9679;</span> 48hr avg support response time</li>
+                                                    <li class="flex items-start gap-1"><span class="text-red-400 mt-0.5">&#9679;</span> No lead scoring system</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div class="how-step-content hidden grid grid-cols-1 md:grid-cols-2 gap-0 h-full" data-step-content="3">
+                                <div class="p-8 flex flex-col justify-center">
+                                    <h3 class="text-2xl font-bold mb-4">Pre-built packages that match their exact situation</h3>
+                                    <p class="text-gray-600 text-lg leading-relaxed">
+                                        The audit agent maps prospect responses to proven AI implementations &mdash; scoped, priced, and ready to present. You don&rsquo;t walk in with a pitch. You walk in with packages built around problems they&rsquo;ve already told you they have.
+                                    </p>
+                                </div>
+                                <div class="p-8 border-l border-black bg-gray-50 flex items-center">
+                                    <div class="border-2 border-dashed border-black bg-white w-full">
+                                        <div class="px-4 py-3 border-b border-dashed border-black">
+                                            <span class="font-bold text-sm">Recommended Packages</span>
+                                        </div>
+                                        <div class="p-4 space-y-3">
+                                            <div class="border border-brand-orange bg-brand-orange/5 p-3">
+                                                <div class="flex justify-between items-start">
+                                                    <div>
+                                                        <p class="font-bold text-sm">AI Support Agent</p>
+                                                        <p class="text-xs text-gray-500 mt-1">Custom LLM agent + helpdesk integration + training</p>
+                                                    </div>
+                                                    <span class="font-mono text-xs bg-brand-orange text-white px-2 py-0.5">BEST FIT</span>
+                                                </div>
+                                                <p class="font-bold text-sm mt-2">$18&ndash;22k</p>
+                                            </div>
+                                            <div class="border border-gray-200 p-3">
+                                                <p class="font-bold text-sm">Reporting Automation</p>
+                                                <p class="text-xs text-gray-500 mt-1">Dashboard + data pipeline + scheduled reports</p>
+                                                <p class="font-bold text-sm mt-2">$12&ndash;15k</p>
+                                            </div>
+                                            <div class="border-t border-gray-200 pt-3 flex justify-between text-sm">
+                                                <span class="text-gray-500">Bundle both</span>
+                                                <span class="font-bold">$26&ndash;32k <span class="text-xs font-normal text-green-600">save 15%</span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 4 -->
+                            <div class="how-step-content hidden grid grid-cols-1 md:grid-cols-2 gap-0 h-full" data-step-content="4">
+                                <div class="p-8 flex flex-col justify-center">
+                                    <h3 class="text-2xl font-bold mb-4">A pipeline that builds itself</h3>
+                                    <p class="text-gray-600 text-lg leading-relaxed">
+                                        Every completed audit feeds your leads dashboard &mdash; categorised by intent, scored by readiness, and waiting for you to act. Hot leads, warm leads, follow-ups &mdash; all pre-qualified, all organised. The funnel fills while you&rsquo;re closing other deals.
+                                    </p>
+                                </div>
+                                <div class="p-8 border-l border-black bg-gray-50 flex items-center">
+                                    <div class="border-2 border-dashed border-black bg-white w-full">
+                                        <div class="px-4 py-3 border-b border-dashed border-black flex items-center justify-between">
+                                            <span class="font-bold text-sm">Pipeline</span>
+                                            <span class="font-mono text-xs text-gray-400">THIS WEEK</span>
+                                        </div>
+                                        <div class="divide-y divide-gray-100">
+                                            <div class="px-4 py-3 flex items-center justify-between">
+                                                <div class="flex items-center gap-3">
+                                                    <span class="w-2 h-2 bg-red-400 rounded-full"></span>
+                                                    <div><p class="text-sm font-medium">Meridian Corp</p><p class="font-mono text-xs text-gray-400">AI Support Agent</p></div>
+                                                </div>
+                                                <div class="text-right"><p class="font-bold text-sm">$22k</p><span class="font-mono text-xs bg-red-100 text-red-700 px-1.5 py-0.5">HOT</span></div>
+                                            </div>
+                                            <div class="px-4 py-3 flex items-center justify-between">
+                                                <div class="flex items-center gap-3">
+                                                    <span class="w-2 h-2 bg-yellow-400 rounded-full"></span>
+                                                    <div><p class="text-sm font-medium">Oakridge Labs</p><p class="font-mono text-xs text-gray-400">Reporting + Support Bundle</p></div>
+                                                </div>
+                                                <div class="text-right"><p class="font-bold text-sm">$31k</p><span class="font-mono text-xs bg-yellow-100 text-yellow-700 px-1.5 py-0.5">WARM</span></div>
+                                            </div>
+                                            <div class="px-4 py-3 flex items-center justify-between">
+                                                <div class="flex items-center gap-3">
+                                                    <span class="w-2 h-2 bg-blue-400 rounded-full"></span>
+                                                    <div><p class="text-sm font-medium">Flux Digital</p><p class="font-mono text-xs text-gray-400">Reporting Automation</p></div>
+                                                </div>
+                                                <div class="text-right"><p class="font-bold text-sm">$14k</p><span class="font-mono text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5">NEW</span></div>
+                                            </div>
+                                        </div>
+                                        <div class="px-4 py-3 border-t border-black bg-gray-50 flex justify-between text-sm">
+                                            <span class="text-gray-500">Pipeline total</span>
+                                            <span class="font-bold">$67k</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS v2 — sticky scroll -->
+    <section id="how-it-works" class="border-b-2 border-black bg-warm-solid">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8">
+            <h2 class="text-4xl font-black pt-20 pb-16 text-center">How it actually works.</h2>
+
+            <!-- GRID 1: Items 1-4 with their own sticky panel -->
+            <div class="lg:grid lg:grid-cols-5 lg:gap-16">
+
+                <!-- LEFT: sticky image panel (group 1) -->
+                <div class="hidden lg:block lg:col-span-3">
+                    <div class="sticky flex flex-col items-center" style="top: 12vh;">
+                        <span class="inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 mb-6" style="background: rgba(232, 120, 95, 0.12);">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color: #c75a3a; flex-shrink: 0;"><path d="M8 3C4.36 3 1.26 5.28.05 8c1.21 2.72 4.31 5 7.95 5s6.74-2.28 7.95-5c-1.21-2.72-4.31-5-7.95-5zm0 8.33A3.33 3.33 0 1 1 8 4.67a3.33 3.33 0 0 1 0 6.66zm0-5.33a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" fill="currentColor"/></svg>
+                            <span class="uppercase text-[13px] font-semibold tracking-[2px]" style="color: #c75a3a;">What your prospect sees</span>
+                        </span>
+                        <div class="aspect-[4/3] w-full bg-white border-2 border-black overflow-hidden relative">
+                            <div class="scroll-visual active" data-visual="1">
+                                <div class="w-full h-full bg-brand-orange/10 flex flex-col items-center justify-center p-5">
+                                    <div class="w-full max-w-xs">
+                                        <div class="bg-white border-2 border-black p-4 mb-4">
+                                            <div class="flex items-center gap-3 mb-3">
+                                                <div class="w-8 h-8 bg-brand-orange rounded"></div>
+                                                <span class="font-bold text-sm">Your Brand AI Audit</span>
+                                            </div>
+                                            <div class="h-2 bg-gray-200 rounded mb-2 w-full"></div>
+                                            <div class="h-2 bg-gray-200 rounded mb-2 w-3/4"></div>
+                                            <div class="h-2 bg-brand-orange/30 rounded w-1/2"></div>
+                                        </div>
+                                        <div class="bg-white border border-gray-200 p-3">
+                                            <p class="text-xs text-gray-400 mb-2">Progress</p>
+                                            <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                                <div class="h-full bg-brand-orange rounded-full" style="width: 35%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="scroll-visual" data-visual="2">
+                                <div class="w-full h-full bg-amber-50 flex flex-col items-center justify-center p-5">
+                                    <div class="w-full max-w-xs">
+                                        <div class="bg-white border-2 border-black p-4 mb-3">
+                                            <p class="text-xs font-bold text-gray-400 mb-3">DIAGNOSTIC QUESTION 3 OF 8</p>
+                                            <p class="font-bold text-sm mb-4">What's your current biggest operational bottleneck?</p>
+                                            <div class="space-y-2">
+                                                <div class="border border-gray-200 rounded px-3 py-2 text-xs">Manual data entry</div>
+                                                <div class="border-2 border-brand-orange bg-brand-orange/5 rounded px-3 py-2 text-xs font-medium">Client onboarding</div>
+                                                <div class="border border-gray-200 rounded px-3 py-2 text-xs">Report generation</div>
+                                                <div class="border border-gray-200 rounded px-3 py-2 text-xs">Invoice processing</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="scroll-visual" data-visual="3">
+                                <div class="w-full h-full bg-teal-50 flex flex-col items-center justify-center p-5">
+                                    <div class="w-full max-w-xs">
+                                        <div class="bg-white border-2 border-black p-4 mb-3">
+                                            <p class="text-xs font-bold text-teal-600 mb-2">AI OPPORTUNITY REPORT</p>
+                                            <p class="font-bold text-sm mb-3">3 high-impact areas identified</p>
+                                            <div class="space-y-3">
+                                                <div class="flex items-center justify-between text-xs">
+                                                    <span>Client Onboarding</span>
+                                                    <span class="font-bold text-teal-600">$42k saved/yr</span>
+                                                </div>
+                                                <div class="h-1.5 bg-teal-100 rounded-full overflow-hidden"><div class="h-full bg-teal-500 rounded-full" style="width: 85%"></div></div>
+                                                <div class="flex items-center justify-between text-xs">
+                                                    <span>Report Generation</span>
+                                                    <span class="font-bold text-teal-600">$28k saved/yr</span>
+                                                </div>
+                                                <div class="h-1.5 bg-teal-100 rounded-full overflow-hidden"><div class="h-full bg-teal-500 rounded-full" style="width: 65%"></div></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="scroll-visual" data-visual="4">
+                                <div class="w-full h-full bg-green-50 flex flex-col items-center justify-center p-5">
+                                    <div class="w-full max-w-xs">
+                                        <div class="bg-white border-2 border-black p-4 mb-3">
+                                            <p class="text-xs font-bold text-green-600 mb-2">BOOK YOUR STRATEGY CALL</p>
+                                            <p class="font-bold text-sm mb-4">Pick a time that works</p>
+                                            <div class="grid grid-cols-3 gap-1.5 mb-3">
+                                                <div class="border border-gray-200 rounded px-2 py-1.5 text-xs text-center">Mon 9a</div>
+                                                <div class="border-2 border-green-500 bg-green-50 rounded px-2 py-1.5 text-xs text-center font-medium">Tue 2p</div>
+                                                <div class="border border-gray-200 rounded px-2 py-1.5 text-xs text-center">Wed 10a</div>
+                                                <div class="border border-gray-200 rounded px-2 py-1.5 text-xs text-center">Thu 3p</div>
+                                                <div class="border border-gray-200 rounded px-2 py-1.5 text-xs text-center">Fri 11a</div>
+                                                <div class="border border-gray-200 rounded px-2 py-1.5 text-xs text-center">Fri 4p</div>
+                                            </div>
+                                            <div class="bg-green-500 text-white text-center py-2 text-xs font-bold rounded">Confirm Booking</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: scrollable items 1-4 -->
+                <div class="lg:col-span-2">
+                    <!-- Item 1 -->
+                    <div class="scroll-item active min-h-[50vh] mb-8 flex flex-col justify-center" data-step="1">
+                        <div class="lg:hidden mb-6">
+                            <div class="aspect-[4/3] bg-white border-2 border-black overflow-hidden flex items-center justify-center">
+                                <div class="w-full h-full bg-brand-orange/10 flex flex-col items-center justify-center p-6">
+                                    <div class="w-8 h-8 bg-brand-orange rounded mb-2"></div>
+                                    <p class="text-sm font-bold text-gray-500">Branded Audit UI</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">An AI audit, in your brand</h3>
+                        <p class="text-lg text-gray-600 leading-relaxed">Your prospect answers a short series of questions about their business &mdash; operations, pain points, tech stack, goals, budget. It runs under your brand. They never see ConsultKit.</p>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="scroll-item min-h-[50vh] mb-8 flex flex-col justify-center" data-step="2">
+                        <div class="lg:hidden mb-6">
+                            <div class="aspect-[4/3] bg-white border-2 border-black overflow-hidden flex items-center justify-center">
+                                <div class="w-full h-full bg-amber-50 flex flex-col items-center justify-center p-6">
+                                    <p class="text-sm font-bold text-gray-500">Smart Questions Screen</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Questions that map directly to where AI can help</h3>
+                        <p class="text-lg text-gray-600 leading-relaxed">Every question is built on diagnostic frameworks used by tier-1 consultancies. Each response narrows the gap between &ldquo;I&rsquo;m curious about AI&rdquo; and &ldquo;I can see exactly what I need.&rdquo;</p>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="scroll-item min-h-[50vh] mb-8 flex flex-col justify-center" data-step="3">
+                        <div class="lg:hidden mb-6">
+                            <div class="aspect-[4/3] bg-white border-2 border-black overflow-hidden flex items-center justify-center">
+                                <div class="w-full h-full bg-teal-50 flex flex-col items-center justify-center p-6">
+                                    <p class="text-sm font-bold text-gray-500">Generated Report</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">A custom report showing what AI could do for their business</h3>
+                        <p class="text-lg text-gray-600 leading-relaxed">The audit agent analyses their responses, identifies what&rsquo;s costing them money, and generates a report matching their situation to proven AI solutions &mdash; with projected ROI and clear upside. Not generic. Theirs.</p>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="scroll-item min-h-[50vh] mb-8 flex flex-col justify-center" data-step="4">
+                        <div class="lg:hidden mb-6">
+                            <div class="aspect-[4/3] bg-white border-2 border-black overflow-hidden flex items-center justify-center">
+                                <div class="w-full h-full bg-green-50 flex flex-col items-center justify-center p-6">
+                                    <p class="text-sm font-bold text-gray-500">Booking Screen</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">They get on the call informed, specific, and ready to move</h3>
+                        <p class="text-lg text-gray-600 leading-relaxed">By the time you&rsquo;re on the call, they&rsquo;ve already seen where they&rsquo;re leaving money on the table and which systems would fix it. Problem discovery is done. You&rsquo;re not educating &mdash; you&rsquo;re scoping next steps.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PERSPECTIVE BREAK — whitespace only -->
+            <div class="py-24"></div>
+
+            <!-- GRID 2: Items 5-8 — flipped: text left, image right -->
+            <div class="lg:grid lg:grid-cols-5 lg:gap-16 pb-20">
+
+                <!-- LEFT: scrollable items 5-8 -->
+                <div class="lg:col-span-2 lg:order-1">
+                    <!-- Item 5 -->
+                    <div class="scroll-item min-h-[50vh] mb-8 flex flex-col justify-center" data-step="5">
+                        <div class="lg:hidden mb-6">
+                            <div class="aspect-[4/3] bg-white border-2 border-black overflow-hidden flex items-center justify-center">
+                                <div class="w-full h-full bg-indigo-50 flex flex-col items-center justify-center p-6">
+                                    <p class="text-sm font-bold text-gray-500">Landing Page Builder</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">A branded landing page that&rsquo;s live the moment you sign up</h3>
+                        <p class="text-lg text-gray-600 leading-relaxed">Add your logo, colours, and testimonials &mdash; it&rsquo;s ready to share the moment your account is active. Outreach, LinkedIn, ads, your website. Consultants using it typically see click-through rates 5&ndash;10x higher than standard landing pages.</p>
+                    </div>
+
+                    <!-- Item 6 -->
+                    <div class="scroll-item min-h-[50vh] mb-8 flex flex-col justify-center" data-step="6">
+                        <div class="lg:hidden mb-6">
+                            <div class="aspect-[4/3] bg-white border-2 border-black overflow-hidden flex items-center justify-center">
+                                <div class="w-full h-full bg-blue-50 flex flex-col items-center justify-center p-6">
+                                    <p class="text-sm font-bold text-gray-500">Prospect Intel Dashboard</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Full prospect intel before you say a word</h3>
+                        <p class="text-lg text-gray-600 leading-relaxed">The audit agent captures everything &mdash; budget range, timeline, team size, tech stack, key pain points, and contact details. When the call comes, you already know more about their business than they&rsquo;d expect.</p>
+                    </div>
+
+                    <!-- Item 7 -->
+                    <div class="scroll-item min-h-[50vh] mb-8 flex flex-col justify-center" data-step="7">
+                        <div class="lg:hidden mb-6">
+                            <div class="aspect-[4/3] bg-white border-2 border-black overflow-hidden flex items-center justify-center">
+                                <div class="w-full h-full bg-purple-50 flex flex-col items-center justify-center p-6">
+                                    <p class="text-sm font-bold text-gray-500">Package Matcher</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Pre-built packages that match their exact situation</h3>
+                        <p class="text-lg text-gray-600 leading-relaxed">The audit agent maps prospect responses to proven AI implementations &mdash; scoped, priced, and ready to present. You don&rsquo;t walk in with a pitch. You walk in with packages built around problems they&rsquo;ve already told you they have.</p>
+                    </div>
+
+                    <!-- Item 8 -->
+                    <div class="scroll-item min-h-[50vh] mb-8 flex flex-col justify-center" data-step="8">
+                        <div class="lg:hidden mb-6">
+                            <div class="aspect-[4/3] bg-white border-2 border-black overflow-hidden flex items-center justify-center">
+                                <div class="w-full h-full bg-red-50 flex flex-col items-center justify-center p-6">
+                                    <p class="text-sm font-bold text-gray-500">Pipeline View</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">A pipeline that builds itself</h3>
+                        <p class="text-lg text-gray-600 leading-relaxed">Every completed audit feeds your leads dashboard &mdash; categorised by intent, scored by readiness, and waiting for you to act. Hot leads, warm leads, follow-ups &mdash; all pre-qualified, all organised. The funnel fills while you&rsquo;re closing other deals.</p>
+                    </div>
+                </div>
+
+                <!-- RIGHT: sticky image panel (group 2) -->
+                <div class="hidden lg:block lg:col-span-3 lg:order-2">
+                    <div class="sticky flex flex-col items-center" style="top: 12vh;">
+                        <span class="inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 mb-6" style="background: rgba(79, 108, 176, 0.12);">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color: #4a6aad; flex-shrink: 0;"><path d="M2 1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H2zm0 9a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1H2zm8-1a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1V9zm1-8a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-3z" fill="currentColor"/></svg>
+                            <span class="uppercase text-[13px] font-semibold tracking-[2px]" style="color: #4a6aad;">What you get</span>
+                        </span>
+                        <div class="aspect-[4/3] w-full bg-white border-2 border-black overflow-hidden relative">
+                            <div class="scroll-visual active" data-visual="5">
+                                <div class="w-full h-full bg-indigo-50 flex flex-col items-center justify-center p-5">
+                                    <div class="w-full max-w-xs">
+                                        <div class="bg-white border-2 border-black p-4 mb-3">
+                                            <p class="text-xs font-bold text-indigo-600 mb-2">LANDING PAGE BUILDER</p>
+                                            <div class="border border-dashed border-gray-300 p-3 mb-3 rounded">
+                                                <div class="flex items-center gap-2 mb-2">
+                                                    <div class="w-6 h-6 bg-indigo-500 rounded"></div>
+                                                    <div class="h-2 bg-gray-200 rounded w-20"></div>
+                                                </div>
+                                                <div class="h-2 bg-gray-200 rounded mb-1.5 w-full"></div>
+                                                <div class="h-2 bg-gray-200 rounded mb-1.5 w-4/5"></div>
+                                                <div class="h-6 bg-indigo-500 rounded mt-3 w-24"></div>
+                                            </div>
+                                            <div class="flex items-center justify-between text-xs">
+                                                <span class="text-gray-400">Status</span>
+                                                <span class="font-bold text-green-600">Live</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="scroll-visual" data-visual="6">
+                                <div class="w-full h-full bg-blue-50 flex flex-col items-center justify-center p-5">
+                                    <div class="w-full max-w-xs">
+                                        <div class="bg-white border-2 border-black p-4 mb-3">
+                                            <p class="text-xs font-bold text-blue-600 mb-2">PROSPECT INTEL</p>
+                                            <div class="space-y-2">
+                                                <div class="flex justify-between text-xs"><span class="text-gray-500">Budget</span><span class="font-medium">$15k–25k</span></div>
+                                                <div class="flex justify-between text-xs"><span class="text-gray-500">Timeline</span><span class="font-medium">Q2 2025</span></div>
+                                                <div class="flex justify-between text-xs"><span class="text-gray-500">Team size</span><span class="font-medium">12 people</span></div>
+                                                <div class="flex justify-between text-xs"><span class="text-gray-500">Tech stack</span><span class="font-medium">HubSpot, Notion</span></div>
+                                                <div class="flex justify-between text-xs"><span class="text-gray-500">Pain point</span><span class="font-medium text-red-600">Client onboarding</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="scroll-visual" data-visual="7">
+                                <div class="w-full h-full bg-purple-50 flex flex-col items-center justify-center p-5">
+                                    <div class="w-full max-w-xs">
+                                        <div class="bg-white border-2 border-black p-4 mb-3">
+                                            <p class="text-xs font-bold text-purple-600 mb-2">RECOMMENDED PACKAGES</p>
+                                            <div class="space-y-2">
+                                                <div class="border-2 border-purple-500 bg-purple-50 rounded p-2">
+                                                    <div class="flex justify-between items-center">
+                                                        <span class="text-xs font-bold">Onboarding Automator</span>
+                                                        <span class="text-xs font-bold text-purple-600">$18k</span>
+                                                    </div>
+                                                    <p class="text-xs text-gray-400 mt-1">Best match — 92%</p>
+                                                </div>
+                                                <div class="border border-gray-200 rounded p-2">
+                                                    <div class="flex justify-between items-center">
+                                                        <span class="text-xs font-bold">Reporting Suite</span>
+                                                        <span class="text-xs font-bold">$12k</span>
+                                                    </div>
+                                                    <p class="text-xs text-gray-400 mt-1">Good match — 78%</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="scroll-visual" data-visual="8">
+                                <div class="w-full h-full bg-red-50 flex flex-col items-center justify-center p-5">
+                                    <div class="w-full max-w-xs">
+                                        <div class="bg-white border-2 border-black p-4 mb-3">
+                                            <p class="text-xs font-bold text-red-600 mb-2">YOUR PIPELINE</p>
+                                            <div class="space-y-2">
+                                                <div class="flex items-center justify-between text-xs">
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                                                        <span>Hot leads</span>
+                                                    </div>
+                                                    <span class="font-bold">4</span>
+                                                </div>
+                                                <div class="flex items-center justify-between text-xs">
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="w-2 h-2 bg-amber-400 rounded-full"></span>
+                                                        <span>Warm leads</span>
+                                                    </div>
+                                                    <span class="font-bold">7</span>
+                                                </div>
+                                                <div class="flex items-center justify-between text-xs">
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="w-2 h-2 bg-gray-300 rounded-full"></span>
+                                                        <span>Follow-ups</span>
+                                                    </div>
+                                                    <span class="font-bold">12</span>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3 pt-3 border-t border-gray-200 flex justify-between text-xs">
+                                                <span class="text-gray-500">Pipeline total</span>
+                                                <span class="font-bold">$67k</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMPARISON TABLE - dashed grid bg (alternating from solid) -->
+    <section class="py-20 bg-technical-grid">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-0 border-2 border-black bg-white">
+
+                <div class="lg:col-span-4 p-8 border-b-2 lg:border-b-0 lg:border-r-2 border-black bg-white">
+                    <h2 class="text-4xl font-black mb-6">The hard way costs more than you think.</h2>
+                    <p class="text-lg text-gray-600 mb-8">
+                        Here&rsquo;s what selling AI looks like with and without ConsultKit.
+                    </p>
+                </div>
+
+                <div class="lg:col-span-8">
+                    <!-- Column headers -->
+                    <div class="grid grid-cols-3">
+                        <div class="col-span-1 border-r-2 border-black border-b-2 border-black">
+                            <div class="p-4 bg-white h-14 flex items-center font-mono text-sm text-gray-500">
+                            </div>
+                        </div>
+                        <div class="col-span-1 border-r-2 border-black border-b-2 border-black">
+                            <div class="p-4 bg-gray-100 h-14 flex items-center font-mono text-sm text-gray-500">
+                                Without ConsultKit
+                            </div>
+                        </div>
+                        <div class="col-span-1 border-b-2 border-black">
+                            <div class="p-4 bg-brand-orange/10 h-14 flex items-center font-bold text-lg">
+                                With ConsultKit
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row: Industries you can sell to -->
+                    <div class="grid grid-cols-3">
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm">Industries you can sell to</div>
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm text-gray-400">Your niche</div>
+                        <div class="col-span-1 p-4 border-b border-gray-200 h-14 flex items-center bg-brand-orange/5 text-sm font-medium">All of them</div>
+                    </div>
+
+                    <!-- Row: Landing pages -->
+                    <div class="grid grid-cols-3">
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm">Landing pages</div>
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm text-gray-400">One per industry</div>
+                        <div class="col-span-1 p-4 border-b border-gray-200 h-14 flex items-center bg-brand-orange/5 text-sm font-medium">One page, every industry</div>
+                    </div>
+
+                    <!-- Row: Ad conversion -->
+                    <div class="grid grid-cols-3">
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm">Ad conversion</div>
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm text-gray-400">1&ndash;3%</div>
+                        <div class="col-span-1 p-4 border-b border-gray-200 h-14 flex items-center bg-brand-orange/5 text-sm font-medium">25&ndash;40%</div>
+                    </div>
+
+                    <!-- Row: Discovery -->
+                    <div class="grid grid-cols-3">
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm">Discovery</div>
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm text-gray-400">Hours of unpaid consulting</div>
+                        <div class="col-span-1 p-4 border-b border-gray-200 h-14 flex items-center bg-brand-orange/5 text-sm font-medium">Done before the call</div>
+                    </div>
+
+                    <!-- Row: Intel at call time -->
+                    <div class="grid grid-cols-3">
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm">Intel at call time</div>
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm text-gray-400">LinkedIn + guesswork</div>
+                        <div class="col-span-1 p-4 border-b border-gray-200 h-14 flex items-center bg-brand-orange/5 text-sm font-medium">Budget, stack, pain points, timeline</div>
+                    </div>
+
+                    <!-- Row: First call -->
+                    <div class="grid grid-cols-3">
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm">First call</div>
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm text-gray-400">Fishing for needs</div>
+                        <div class="col-span-1 p-4 border-b border-gray-200 h-14 flex items-center bg-brand-orange/5 text-sm font-medium">Presenting matched solutions</div>
+                    </div>
+
+                    <!-- Row: Pipeline while delivering -->
+                    <div class="grid grid-cols-3">
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm">Pipeline while delivering</div>
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm text-gray-400">Stalls</div>
+                        <div class="col-span-1 p-4 border-b border-gray-200 h-14 flex items-center bg-brand-orange/5 text-sm font-medium">Builds itself</div>
+                    </div>
+
+                    <!-- Row: Prospect perception -->
+                    <div class="grid grid-cols-3">
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm">Prospect perception</div>
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm text-gray-400">&ldquo;Another consultant&rdquo;</div>
+                        <div class="col-span-1 p-4 border-b border-gray-200 h-14 flex items-center bg-brand-orange/5 text-sm font-medium">&ldquo;They already understand my business&rdquo;</div>
+                    </div>
+
+                    <!-- Row: What you walk in with -->
+                    <div class="grid grid-cols-3">
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm">What you walk in with</div>
+                        <div class="col-span-1 border-r-2 border-black p-4 border-b border-gray-200 h-14 flex items-center text-sm text-gray-400">A blank proposal</div>
+                        <div class="col-span-1 p-4 border-b border-gray-200 h-14 flex items-center bg-brand-orange/5 text-sm font-medium">Pre-built packages</div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING SECTION -->
+    <section id="pricing" class="py-20 bg-warm-solid border-b-2 border-black">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8">
+
+            <!-- Heading -->
+            <h2 class="text-3xl lg:text-4xl font-black text-center mb-4">One closed deal covers the entire year.</h2>
+            <p class="text-lg text-gray-600 text-center mb-12">Even a $2,000 starter project pays for a year of Consult Kit 4× over.</p>
+
+            <!-- Single centered pricing card -->
+            <div class="max-w-md mx-auto border-2 border-black bg-white p-8 relative overflow-visible">
+
+                <!-- Flashing discount pill -->
+                <span class="absolute top-0 left-1/2 text-xs font-bold px-4 py-1.5 border-2 border-black rounded-full whitespace-nowrap" style="background: #0fff50; color: #000; animation: pulse-flash 2s ease-in-out infinite;">75% off — first 50 users</span>
+
+                <!-- Plan name + tagline -->
+                <h3 class="text-2xl font-black mb-1">ConsultKit Pro</h3>
+
+                <!-- Price block -->
+                <div class="mb-4">
+                    <span class="text-gray-400 line-through text-lg">$199</span>
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-5xl font-black">$49</span>
+                        <span class="text-gray-500 text-lg">/month</span>
+                    </div>
+                </div>
+
+                <!-- Discount badge -->
+                <!-- <div class="mb-6">
+                    <span class="inline-block border-2 border-black text-xs font-bold px-2 py-1">75% OFF &mdash; First 50 users only</span>
+                </div> -->
+
+                <!-- Feature list -->
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6D2C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
+                        <span class="text-sm">10 audits included</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6D2C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
+                        <span class="text-sm">White-labeled under your brand</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6D2C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
+                        <span class="text-sm">AI systems + pricing in every report</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6D2C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
+                        <span class="text-sm">Pre-built packages matched to each prospect</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6D2C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
+                        <span class="text-sm">Budget, stack, pain points &mdash; before the call</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6D2C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
+                        <span class="text-sm">Leads scored by readiness</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6D2C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
+                        <span class="text-sm">Branded landing page, live on signup</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6D2C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
+                        <span class="text-sm">PDF exports</span>
+                    </li>
+                </ul>
+
+                <!-- CTA button -->
+                <a href="#" class="w-full bg-brand-orange border-2 border-black py-3 font-bold text-center block block-hover transition-all">Start 14-Day Free Trial</a>
+
+            </div>
+
+
+        </div>
+    </section>
+
+    <!-- INTERACTIVE DEMO SECTION (commented out) -->
+    <!--
+    <section class="py-20 border-b-2 border-black bg-technical-grid">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 border-2 border-black">
+                <div class="bg-white p-8 lg:border-r-2 border-black">
+                    <div class="flex gap-2 mb-10">
+                        <div class="w-3 h-3 rounded-full" style="background:#FF5F57;"></div>
+                        <div class="w-3 h-3 rounded-full" style="background:#FFBD2E;"></div>
+                        <div class="w-3 h-3 rounded-full" style="background:#27C93F;"></div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="step-item active" data-step="1">
+                            <span class="font-mono text-xs uppercase tracking-wider opacity-50 block mb-1">Step 1</span>
+                            Prospect completes your branded AI audit
+                        </div>
+                        <div class="step-item" data-step="2">
+                            <span class="font-mono text-xs uppercase tracking-wider opacity-50 block mb-1">Step 2</span>
+                            Audit agent analyzes pain points, budget &amp; tech stack
+                        </div>
+                        <div class="step-item" data-step="3">
+                            <span class="font-mono text-xs uppercase tracking-wider opacity-50 block mb-1">Step 3</span>
+                            Custom report generated with systems, pricing &amp; ROI
+                        </div>
+                        <div class="step-item" data-step="4">
+                            <span class="font-mono text-xs uppercase tracking-wider opacity-50 block mb-1">Step 4</span>
+                            You get full intel — prospect books, discovery is done
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-warm-solid p-8 flex items-center justify-center">
+                    <div class="w-full border-2 border-black bg-white">
+                        <div class="bg-gray-900 px-4 py-3 flex items-center gap-3">
+                            <div class="flex gap-1.5">
+                                <div class="w-2.5 h-2.5 rounded-full bg-gray-600"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-gray-600"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-gray-600"></div>
+                            </div>
+                            <div class="flex-1 bg-gray-800 rounded px-3 py-1 text-gray-400 font-mono text-xs truncate">
+                                app.consultkit.io/audit/demo
+                            </div>
+                        </div>
+                        <div class="p-8 min-h-[320px] flex flex-col items-center justify-center text-center">
+                            <div class="w-16 h-16 bg-brand-orange/10 border-2 border-dashed border-brand-orange flex items-center justify-center mb-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF6D2C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            </div>
+                            <p class="font-mono text-sm text-gray-400 mb-2">Demo video coming soon</p>
+                            <p class="text-xs text-gray-300 max-w-xs">Screen.studio recording of the full audit-to-close flow will replace this placeholder</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    -->
+
+    <!-- FAQ SECTION -->
+    <section id="faq" class="py-20 bg-technical-grid border-b-2 border-black">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                <div class="lg:col-span-4">
+                    <h2 class="text-4xl font-black mb-4">FAQ</h2>
+                </div>
+
+                <div class="lg:col-span-8 space-y-[-2px]">
+
+                    <details class="faq-item bg-white border-2 border-black shadow-hard-sm block-hover group" open>
+                        <summary class="flex justify-between items-center px-6 py-5 font-bold text-lg">
+                            What if I can&rsquo;t deliver what the report recommends?
+                            <span class="faq-chevron text-brand-orange">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </span>
+                        </summary>
+                        <div class="px-6 pb-5 text-gray-600 border-t-2 border-black pt-4">
+                            The report distinguishes between existing tools you can resell and configure, and custom builds that need development work. You see which is which, with pricing guidance for both. You decide what to deliver yourself and what to scope as a build.
+                        </div>
+                    </details>
+
+                    <details class="faq-item bg-white border-2 border-black shadow-hard-sm block-hover group">
+                        <summary class="flex justify-between items-center px-6 py-5 font-bold text-lg">
+                            How do I actually get prospects to take the audit?
+                            <span class="faq-chevron text-brand-orange">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </span>
+                        </summary>
+                        <div class="px-6 pb-5 text-gray-600 border-t-2 border-black pt-4">
+                            The same places you&rsquo;re already trying to find clients &mdash; just with something that actually converts. Drop the link in LinkedIn DMs, outreach emails, your website, ads, or conversations at events. It works everywhere because prospects aren&rsquo;t being asked to &ldquo;book a call with a stranger.&rdquo; They&rsquo;re being offered a free AI audit that shows them where they&rsquo;re leaving money on the table. That&rsquo;s a fundamentally different ask &mdash; and it converts whether traffic is cold, warm, or paid.
+                        </div>
+                    </details>
+
+                    <details class="faq-item bg-white border-2 border-black shadow-hard-sm block-hover group">
+                        <summary class="flex justify-between items-center px-6 py-5 font-bold text-lg">
+                            How is this different from just using ChatGPT?
+                            <span class="faq-chevron text-brand-orange">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </span>
+                        </summary>
+                        <div class="px-6 pb-5 text-gray-600 border-t-2 border-black pt-4">
+                            ChatGPT gives generic advice from a single prompt. ConsultKit runs a structured audit, then researches what&rsquo;s actually being deployed in your prospect&rsquo;s industry right now &mdash; real tools, real pricing, real ROI. The output is a professional report your client can act on, white-labeled under your brand, with your pipeline filling in the background. Different category of tool entirely.
+                        </div>
+                    </details>
+
+                    <details class="faq-item bg-white border-2 border-black shadow-hard-sm block-hover group">
+                        <summary class="flex justify-between items-center px-6 py-5 font-bold text-lg">
+                            Do I need to be an AI expert to use this?
+                            <span class="faq-chevron text-brand-orange">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </span>
+                        </summary>
+                        <div class="px-6 pb-5 text-gray-600 border-t-2 border-black pt-4">
+                            No. The system handles the research and analysis. By the time you see the output, it&rsquo;s a business-language report telling you what to recommend and what to charge. If you can walk a client through &ldquo;here&rsquo;s what&rsquo;s costing you money, here&rsquo;s what would fix it, here&rsquo;s what it costs&rdquo; &mdash; you&rsquo;re qualified.
+                        </div>
+                    </details>
+
+                    <details class="faq-item bg-white border-2 border-black shadow-hard-sm block-hover group">
+                        <summary class="flex justify-between items-center px-6 py-5 font-bold text-lg">
+                            Can I see what the report looks like before I commit?
+                            <span class="faq-chevron text-brand-orange">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </span>
+                        </summary>
+                        <div class="px-6 pb-5 text-gray-600 border-t-2 border-black pt-4">
+                            Yes. The 14-day free trial gives you full access &mdash; generate audits, see reports, explore the dashboard and recommended packages. Test it with a real prospect or run it yourself before you pay anything.
+                        </div>
+                    </details>
+
+                    <details class="faq-item bg-white border-2 border-black shadow-hard-sm block-hover group">
+                        <summary class="flex justify-between items-center px-6 py-5 font-bold text-lg">
+                            What if other consultants in my space use ConsultKit too?
+                            <span class="faq-chevron text-brand-orange">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </span>
+                        </summary>
+                        <div class="px-6 pb-5 text-gray-600 border-t-2 border-black pt-4">
+                            Every report is generated fresh from live research &mdash; not templates. Recommendations follow the business, not the consultant. But that&rsquo;s the point: the value isn&rsquo;t in the tool, it&rsquo;s in the relationship and the ability to close. ConsultKit gives everyone the same quality of diagnosis. What you do with it is what differentiates you.
+                        </div>
+                    </details>
+
+                    <details class="faq-item bg-white border-2 border-black shadow-hard-sm block-hover group">
+                        <summary class="flex justify-between items-center px-6 py-5 font-bold text-lg">
+                            Is the white-label actually convincing?
+                            <span class="faq-chevron text-brand-orange">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </span>
+                        </summary>
+                        <div class="px-6 pb-5 text-gray-600 border-t-2 border-black pt-4">
+                            Fully. Your logo, your colours, your landing page. The audit, the report, and the booking flow all run under your brand. No &ldquo;Powered by&rdquo; watermark. From your client&rsquo;s perspective, you built this.
+                        </div>
+                    </details>
+
+                    <details class="faq-item bg-white border-2 border-black shadow-hard-sm block-hover group">
+                        <summary class="flex justify-between items-center px-6 py-5 font-bold text-lg">
+                            Will prospects actually complete a 14-question audit?
+                            <span class="faq-chevron text-brand-orange">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </span>
+                        </summary>
+                        <div class="px-6 pb-5 text-gray-600 border-t-2 border-black pt-4">
+                            They will &mdash; because it answers a question they already have: &ldquo;Where is my business leaving money on the table?&rdquo; The report they get back names specific tools with projected ROI, not generic advice. That quality of output is why people finish it. Over 750 business leaders across 38 countries have completed it.
+                        </div>
+                    </details>
+
+                    <details class="faq-item bg-white border-2 border-black shadow-hard-sm block-hover group">
+                        <summary class="flex justify-between items-center px-6 py-5 font-bold text-lg">
+                            What happens after 10 audits?
+                            <span class="faq-chevron text-brand-orange">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </span>
+                        </summary>
+                        <div class="px-6 pb-5 text-gray-600 border-t-2 border-black pt-4">
+                            Extra audits are $12 each &mdash; no limit. If you&rsquo;re running more than 10 per month, your pipeline is full and each audit costs less than a coffee. We&rsquo;ll introduce higher-volume plans as demand grows.
+                        </div>
+                    </details>
+
+                    <details class="faq-item bg-white border-2 border-black shadow-hard-sm block-hover group">
+                        <summary class="flex justify-between items-center px-6 py-5 font-bold text-lg">
+                            Can I pause or cancel anytime?
+                            <span class="faq-chevron text-brand-orange">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </span>
+                        </summary>
+                        <div class="px-6 pb-5 text-gray-600 border-t-2 border-black pt-4">
+                            Yes. Pause for up to 3 months &mdash; your data, brand settings, and lead history are preserved. Or cancel anytime. No contracts, no commitment, no questions.
+                        </div>
+                    </details>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-white py-12 border-t-2 border-black">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-brand-orange border-2 border-black flex items-center justify-center shadow-hard-sm">
+                        <span class="font-mono font-bold text-white text-lg">C</span>
+                    </div>
+                    <span class="font-bold text-xl tracking-tight">ConsultKit</span>
+                </div>
+                <p class="font-mono text-sm text-gray-400 mt-3">&copy; 2025 ConsultKit. All rights reserved.</p>
+            </div>
+
+            <div class="flex gap-3">
+                <a href="#" class="w-9 h-9 bg-black border-2 border-black flex items-center justify-center hover:bg-brand-orange transition-colors">
+                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
+                <a href="#" class="w-9 h-9 bg-black border-2 border-black flex items-center justify-center hover:bg-brand-orange transition-colors">
+                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    </div><!-- end page frame -->
+
+    <script>
+        // How It Works — Tab & Step switching
+        const tabs = document.querySelectorAll('.how-tab');
+        const tabPanels = document.querySelectorAll('[data-tab-panel]');
+        let autoCycleTimer;
+
+        function switchTab(tabName) {
+            // Update tab button states — CSS handles solid/dashed via .active
+            tabs.forEach(t => {
+                t.classList.toggle('active', t.dataset.tab === tabName);
+            });
+            // Show/hide panels
+            tabPanels.forEach(p => {
+                if (p.dataset.tabPanel === tabName) {
+                    p.style.display = '';
+                    p.classList.remove('hidden');
+                } else {
+                    p.style.display = 'none';
+                }
+            });
+            // Reset steps in newly visible panel to step 1
+            const activePanel = document.querySelector(`[data-tab-panel="${tabName}"]`);
+            if (activePanel) {
+                const btns = activePanel.querySelectorAll('.how-step-btn');
+                const contents = activePanel.querySelectorAll('.how-step-content');
+                btns.forEach((b, i) => b.classList.toggle('active', i === 0));
+                contents.forEach((c, i) => c.classList.toggle('hidden', i !== 0));
+            }
+        }
+
+        function switchStep(panel, stepNum) {
+            const btns = panel.querySelectorAll('.how-step-btn');
+            const contents = panel.querySelectorAll('.how-step-content');
+            btns.forEach(b => b.classList.toggle('active', b.dataset.step === stepNum));
+            contents.forEach(c => c.classList.toggle('hidden', c.dataset.stepContent !== stepNum));
+        }
+
+        function getActivePanel() {
+            return document.querySelector('[data-tab-panel]:not([style*="display: none"])');
+        }
+
+        function resetAutoCycle() {
+            clearInterval(autoCycleTimer);
+            autoCycleTimer = setInterval(() => {
+                const panel = getActivePanel();
+                if (!panel) return;
+                const btns = Array.from(panel.querySelectorAll('.how-step-btn'));
+                const activeIdx = btns.findIndex(b => b.classList.contains('active'));
+                const nextIdx = (activeIdx + 1) % btns.length;
+                switchStep(panel, btns[nextIdx].dataset.step);
+            }, 4000);
+        }
+
+        // Tab clicks
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchTab(tab.dataset.tab);
+                resetAutoCycle();
+            });
+        });
+
+        // Step clicks (delegated)
+        document.querySelectorAll('[data-tab-panel]').forEach(panel => {
+            panel.querySelectorAll('.how-step-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchStep(panel, btn.dataset.step);
+                    resetAutoCycle();
+                });
+            });
+        });
+
+        // Start auto-cycle
+        resetAutoCycle();
+
+        // Interactive Demo section — step-item walkthrough (independent)
+        const demoSteps = document.querySelectorAll('.step-item');
+        let demoCycleTimer;
+
+        function activateDemoStep(step) {
+            demoSteps.forEach(s => s.classList.remove('active'));
+            step.classList.add('active');
+        }
+
+        demoSteps.forEach(step => {
+            step.addEventListener('click', () => {
+                clearInterval(demoCycleTimer);
+                activateDemoStep(step);
+                startDemoCycle();
+            });
+        });
+
+        function startDemoCycle() {
+            demoCycleTimer = setInterval(() => {
+                const current = document.querySelector('.step-item.active');
+                const next = current.nextElementSibling?.classList.contains('step-item')
+                    ? current.nextElementSibling
+                    : demoSteps[0];
+                activateDemoStep(next);
+            }, 3000);
+        }
+
+        startDemoCycle();
+
+        // FAQ accordion — close others when one opens
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('toggle', () => {
+                if (item.open) {
+                    document.querySelectorAll('.faq-item').forEach(other => {
+                        if (other !== item) other.removeAttribute('open');
+                    });
+                }
+            });
+        });
+
+        // Sticky-scroll How It Works v2
+        const scrollItems = document.querySelectorAll('.scroll-item');
+        const scrollVisuals = document.querySelectorAll('.scroll-visual');
+
+        if (scrollItems.length && scrollVisuals.length) {
+            let currentStep = '1';
+            let ticking = false;
+
+            function updateActiveStep() {
+                const viewportCenter = window.innerHeight / 2;
+                let closestItem = null;
+                let closestDistance = Infinity;
+
+                scrollItems.forEach(item => {
+                    const rect = item.getBoundingClientRect();
+                    const itemCenter = rect.top + rect.height / 2;
+                    const distance = Math.abs(itemCenter - viewportCenter);
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestItem = item;
+                    }
+                });
+
+                if (closestItem && closestItem.dataset.step !== currentStep) {
+                    currentStep = closestItem.dataset.step;
+                    scrollItems.forEach(item => item.classList.toggle('active', item.dataset.step === currentStep));
+                    scrollVisuals.forEach(v => v.classList.toggle('active', v.dataset.visual === currentStep));
+                }
+            }
+
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    requestAnimationFrame(() => {
+                        updateActiveStep();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, { passive: true });
+
+            updateActiveStep();
+        }
+    </script>
+</body>
+</html>
